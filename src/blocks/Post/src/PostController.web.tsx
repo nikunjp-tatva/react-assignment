@@ -45,7 +45,7 @@ class PostController extends Component<{}, PostControllerState> {
     this.state = {
       posts: [],
       selectedPost: null,
-      page: 1,
+      page: 0,
       loading: false,
       paginationPage: 0,
       rowsPerPage: 10,
