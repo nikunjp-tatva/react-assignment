@@ -1,19 +1,7 @@
-import React from 'react';
+import PostController from './blocks/Post/src/PostController.web';
 
 function App() {
-  return (
-    <div>
-      <header>
-        <a
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Hello React
-        </a>
-      </header>
-    </div>
-  );
+  return (<PostController />);
 }
 
 export default App;
