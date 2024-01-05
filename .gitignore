@@ -25,7 +25,6 @@ yarn-error.log*
 
 
 src/__snapshots__/
-src/__tests__
 
 .cache/
 dist/

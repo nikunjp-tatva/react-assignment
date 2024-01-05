@@ -49,7 +49,7 @@ export default class TableWeb extends Component<TableWebProps> {
   render() {
     return (
       <div>
-        <TableContainer component={Paper} sx={{ maxHeight: 770 }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 700 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
