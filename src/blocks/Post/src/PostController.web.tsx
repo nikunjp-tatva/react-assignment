@@ -140,7 +140,7 @@ class PostController extends Component<{}, PostControllerState> {
   ): Promise<void> => {
     this.setState({ page: paginationPage });
     this.setState({ paginationPage: paginationPage });
-    // const oldData = this.state.posts;
+    const oldData = this.state.posts;
 
     try {
       const data: never[] | APIResponseInterface = await fetchPosts(
@@ -149,7 +149,7 @@ class PostController extends Component<{}, PostControllerState> {
         searchValue
       );
       const updatedData = this.updatedDateData(data?.posts);
-      // const newData = this.mergeUnique(oldData, updatedData, 'title');
+      const newData = this.mergeUnique(oldData, updatedData, 'title');
 
       this.setState({
         rowsPerPage: data.rowsPerPage,
@@ -158,7 +158,7 @@ class PostController extends Component<{}, PostControllerState> {
       this.setState({
         totalPosts: data.totalPages * data.rowsPerPage,
       });
-      this.setState({ posts: updatedData });
+      this.setState({ posts: newData });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
