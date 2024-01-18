@@ -3,7 +3,6 @@ import Constant from '../constant';
 import { PostInterface } from '../interfaces/Post.interface';
 
 const API_URL = Constant.API_URL;
-const API_GET_REQUEST = Constant.API_GET_REQUEST;
 
 export interface APIResponseInterface {
   posts: PostInterface[];
@@ -11,11 +10,9 @@ export interface APIResponseInterface {
   totalPages: number;
 }
 
-export const fetchPosts = async (page: number, rowsPerPage: number, searchValue: string) => {
+export const fetchPosts = async (page: number, rowsPerPage: number, searchValue: string): Promise<APIResponseInterface> => {
   try {
-    const { data } = await axios({
-      method: API_GET_REQUEST,
-      url: API_URL,
+    const { data } = await axios.get(API_URL, {
       params: {
         page,
         tags: 'story',
@@ -39,6 +36,6 @@ export const fetchPosts = async (page: number, rowsPerPage: number, searchValue:
     return apiResponseData;
   } catch (error) {
     console.error('Error fetching new posts:', error);
-    return [];
+    throw error;
   }
 };

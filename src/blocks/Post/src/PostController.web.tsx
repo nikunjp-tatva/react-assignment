@@ -71,7 +71,11 @@ class PostController extends Component<{}, PostControllerState> {
     newPage: number
   ) => {
     this.setState({ paginationPage: newPage });
-    this.handleAPIPolling(newPage, this.state.rowsPerPage, this.state.searchValue);
+    this.handleAPIPolling(
+      newPage,
+      this.state.rowsPerPage,
+      this.state.searchValue
+    );
   };
 
   handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +116,7 @@ class PostController extends Component<{}, PostControllerState> {
 
     return mainArray;
   };
-  
+
   convertDate = (inputDate: string) => {
     const date = new Date(inputDate);
     const options: {
@@ -132,11 +136,11 @@ class PostController extends Component<{}, PostControllerState> {
   handleAPIPolling = async (
     paginationPage: number,
     rowsPerPage: number,
-    searchValue: string,
+    searchValue: string
   ): Promise<void> => {
     this.setState({ page: paginationPage });
     this.setState({ paginationPage: paginationPage });
-    const oldData = this.state.posts;
+    // const oldData = this.state.posts;
 
     try {
       const data: never[] | APIResponseInterface = await fetchPosts(
@@ -144,27 +148,28 @@ class PostController extends Component<{}, PostControllerState> {
         rowsPerPage,
         searchValue
       );
-      const updatedData = this.updatedDateData(
-        (data as APIResponseInterface)?.posts
-      );
-      const newData = this.mergeUnique(oldData, updatedData, 'title');
-      this.setState({ posts: newData });
+      const updatedData = this.updatedDateData(data?.posts);
+      // const newData = this.mergeUnique(oldData, updatedData, 'title');
+
       this.setState({
-        rowsPerPage: (data as APIResponseInterface).rowsPerPage,
+        rowsPerPage: data.rowsPerPage,
       });
-      this.setState({ totalPages: (data as APIResponseInterface).totalPages });
+      this.setState({ totalPages: data.totalPages });
       this.setState({
-        totalPosts:
-          (data as APIResponseInterface).totalPages *
-          (data as APIResponseInterface).rowsPerPage,
+        totalPosts: data.totalPages * data.rowsPerPage,
       });
+      this.setState({ posts: updatedData });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   componentDidMount() {
-    this.handleAPIPolling(this.state.paginationPage, this.state.rowsPerPage, this.state.searchValue);
+    this.handleAPIPolling(
+      this.state.paginationPage,
+      this.state.rowsPerPage,
+      this.state.searchValue
+    );
   }
 
   render(): JSX.Element {
@@ -176,33 +181,25 @@ class PostController extends Component<{}, PostControllerState> {
       paginationPage,
       rowsPerPage,
     } = this.state;
-    const filteredData = posts.filter(
-      (item) =>
-        item.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.url.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.created_at.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.author.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    const sortedData = filteredData
+    // const filteredData = posts.filter(
+    //   (item) =>
+    //     item.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+    //     item.url.toLowerCase().includes(searchValue.toLowerCase()) ||
+    //     item.created_at.toLowerCase().includes(searchValue.toLowerCase()) ||
+    //     item.author.toLowerCase().includes(searchValue.toLowerCase())
+    // );
+    const sortedData = posts
       .slice(
         paginationPage * rowsPerPage,
         paginationPage * rowsPerPage + rowsPerPage
       )
       .sort((a, b) => {
         const isAsc = sortDirection === 'asc';
-        let nextValue: string | Date = a[sortBy];
-        let prevValue: string | Date = b[sortBy];
+        let nextValue: string = a[sortBy];
+        let prevValue: string = b[sortBy];
 
-        if (sortBy === 'created_at') {
-          prevValue = new Date(prevValue);
-          nextValue = new Date(nextValue);
-        } else if (
-          typeof prevValue === 'string' &&
-          typeof nextValue === 'string'
-        ) {
-          prevValue = prevValue.toUpperCase();
-          nextValue = nextValue.toUpperCase();
-        }
+        prevValue = prevValue.toUpperCase();
+        nextValue = nextValue.toUpperCase();
 
         if (nextValue < prevValue) {
           return isAsc ? -1 : 1;
@@ -212,6 +209,7 @@ class PostController extends Component<{}, PostControllerState> {
         }
         return 0;
       });
+
     return (
       <>
         <h1>

@@ -20,7 +20,7 @@ import { PostInterface } from '../../interfaces/Post.interface';
 import ModalWeb from '../Modal/Modal.web';
 import { TableColumns } from '../../blocks/Post/src/PostController.web';
 
-interface TableWebProps {
+export interface TableWebProps {
   paginationPage: number;
   rowsPerPage: number;
   selectedPost: PostInterface | null;
@@ -81,10 +81,8 @@ export default class TableWeb extends Component<TableWebProps> {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.props.sortedData.map((row: PostInterface) => (
-                <TableRow
-                  key={row.title}
-                 >
+              {this.props.sortedData.map((row: PostInterface, index) => (
+                <TableRow key={row.title + row.author + row.created_at + index}>
                   <StyledTableCell sx={{ width: 600 }}>
                     {row.title}
                   </StyledTableCell>
@@ -97,10 +95,14 @@ export default class TableWeb extends Component<TableWebProps> {
                   <StyledTableCell sx={{ width: 250 }}>
                     {row.author}
                   </StyledTableCell>
-                  <StyledTableCell  onClick={() => this.props.handleRowClick(row)}>
-                  <IconButton sx={{ width: 20 }} aria-label='expand row' size='small'>
-                    <InfoIcon />
-                  </IconButton>
+                  <StyledTableCell
+                    onClick={() => this.props.handleRowClick(row)}>
+                    <IconButton
+                      sx={{ width: 20 }}
+                      aria-label='expand row'
+                      size='small'>
+                      <InfoIcon />
+                    </IconButton>
                   </StyledTableCell>
                 </TableRow>
               ))}
@@ -114,6 +116,7 @@ export default class TableWeb extends Component<TableWebProps> {
           onPageChange={this.props.handleChangePage}
           rowsPerPage={this.props.rowsPerPage}
           onRowsPerPageChange={this.props.handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 20, 50, 100]}
         />
         <ModalWeb
           selectedPost={this.props.selectedPost}
